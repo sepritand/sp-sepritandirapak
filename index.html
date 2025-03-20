@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scientific Number Accepter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & Global Styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #ff0080);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      color: #ffffff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .navbar { background: rgba(15, 15, 15, 0.9); padding: 15px 0; position: fixed; top: 0; width: 100%; display: flex; justify-content: center; border-bottom: 2px solid #ff0080; }
+    .navbar a { color: #ff0080; margin: 0 25px; text-decoration: none; font-size: 18px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
+    .navbar a:hover { color: #ffffff; }
+    .content { flex: 1; padding: 80px 20px 20px; display: flex; justify-content: center; align-items: center; text-align: center; }
+    .section { display: none; max-width: 600px; width: 90%; margin: auto; }
+    .section.active { display: block; }
+    button { margin-top: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; background: #ff0080; color: #000; transition: background 0.3s ease; }
+    button:hover { background: #00c3ff; }
+    textarea { width: 100%; height: 100px; font-size: 16px; padding: 8px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a onclick="showSection('file')">File</a>
+    <a onclick="showSection('edit')">Edit</a>
+    <a onclick="showSection('run')">Run</a>
+    <a onclick="showSection('about')">About Us</a>
+  </div>
+  
+  <div class="content">
+    <div id="file" class="section">
+      <h2>File</h2>
+      <textarea id="fileText" placeholder="Tulis sesuatu..."></textarea>
+      <br>
+      <button onclick="saveFile()">Save</button>
+      <button onclick="saveFileAs()">Save As</button>
+    </div>
+    
+    <div id="edit" class="section">
+      <h2>Edit</h2>
+      <textarea id="editText" placeholder="Salin dan tempel di sini..."></textarea>
+      <br>
+      <button onclick="copyText()">Copy</button>
+      <button onclick="pasteText()">Paste</button>
+    </div>
+    
+    <div id="run" class="section active">
+      <h2>Run</h2>
+      <input type="text" id="numberInput" placeholder="Masukkan bilangan">
+      <br>
+      <button onclick="validateNumber()">Run</button>
+      <p id="result"></p>
+    </div>
+    
+    <div id="about" class="section">
+      <h2>About Us</h2>
+      <p>Nama: Sepri Tandira'pak</p>
+      <p>NIM: 231011060048</p>
+      <p>Kelas: Teori Bahasa dan Otomata</p>
+      <p>Prodi: Sistem Informasi</p>
+    </div>
+  </div>
+  
+  <script>
+    function showSection(sectionId) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(sectionId).classList.add('active');
+    }
+    function validateNumber() {
+      var input = document.getElementById('numberInput').value.trim();
+      document.getElementById('result').textContent = /^[+-]?\d+(\.\d+)?([eE][+-]?\d+)?$/.test(input) ? "Yes, it is a number" : "No, it is not a number";
+    }
+    function saveFile() {
+      let text = document.getElementById("fileText").value;
+      let blob = new Blob([text], { type: "text/plain" });
+      let link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "default.txt";
+      link.click();
+    }
+    function saveFileAs() {
+      let fileName = prompt("Masukkan nama file: ", "file.txt");
+      if (fileName) {
+        let text = document.getElementById("fileText").value;
+        let blob = new Blob([text], { type: "text/plain" });
+        let link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+      }
+    }
+    function copyText() {
+      let textArea = document.getElementById("editText");
+      textArea.select();
+      document.execCommand("copy");
+      alert("Teks disalin!");
+    }
+    function pasteText() {
+      navigator.clipboard.readText().then(text => {
+        document.getElementById("editText").value = text;
+      }).catch(err => {
+        alert("Gagal menempel teks!");
+      });
+    }
+  </script>
+</body>
+</html>
